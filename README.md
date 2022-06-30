@@ -1,92 +1,83 @@
-# ansibleAviVs
+# ansibleAviVsIPamDns
 
 ## Goals
 Configure a Health Monitor, Pool and VS through Ansible
 
 ## Prerequisites:
-1. Make sure pip install avisdk is installed:
+- Make sure pip install avisdk is installed:
 ```
-pip install avisdk==18.2.9
-sudo -u ubuntu ansible-galaxy install -f avinetworks.avisdk
+pip install avisdk==21.1.4
 ```
-3. Make sure your Avi Controller is reachable from your ansible host
-4. Make sure you have an IPAM/DNS profile configured
+- Make sure the following ansible collection is installed:
+```
+ansible-galaxy collection install vmware.alb
+```
+- Make sure your Avi Controller is reachable from your ansible host
+- Make sure you have a vCenter cloud, IPAM/DNS profile configured
 
 ## Environment:
 
 ### Ansible version
-
 ```
-avi@ansible:~/ansible/aviLscCloud$ ansible --version
-ansible 2.9.5
-  config file = /etc/ansible/ansible.cfg
-  configured module search path = [u'/home/avi/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/avi/.local/lib/python2.7/site-packages/ansible
-  executable location = /home/avi/.local/bin/ansible
-  python version = 2.7.12 (default, Oct  8 2019, 14:14:10) [GCC 5.4.0 20160609]
-avi@ansible:~/ansible/aviLscCloud$
+ansible 2.10.13
+  config file = None
+  configured module search path = ['/home/ubuntu/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/ubuntu/.local/lib/python3.8/site-packages/ansible
+  executable location = /home/ubuntu/.local/bin/ansible
+  python version = 3.8.10 (default, Mar 15 2022, 12:22:08) [GCC 9.4.0]
 ```
 
 ### Avi version
-
 ```
-Avi 20.1.1
-avisdk 18.2.9
+Avi 21.1.4
+avisdk 21.1.4
 ```
 
 ### Avi Environment
-
-- LSC Cloud
-- VMware Cloud (Vsphere 6.7.0.42000) without NSX
-
+- vCenter
 
 ## Input/Parameters:
 
 1. Make sure you have a json file with the Avi credentials like the following:
 
 ```
-avi@ansible:~/ansible/aviVs$ more vars/creds.json
-{"avi_credentials": {"username": "admin", "controller": "192.168.142.135", "password": "*****", "api_version": "18.2.9"}}
-avi@ansible:~/ansible/aviVs$
+ubuntu@jump-sofia:~/ansibleAviVsIpamDns$ more creds.json
+{"avi_credentials": {"api_version": "21.1.4", "controller": "10.41.135.72", "password": "******", "username": "ansible"}}
+ubuntu@jump-sofia:~/ansibleAviVsIpamDns$
 ```
 
-2. All the other paramaters/variables are stored in vars/params.yml
+2. All the other variables are stored in vars/params.yml
 - The following parameters need to be changed:
 ```
 avi_servers_ips:
-  - 172.16.3.253
-  - 172.16.3.254
+  - 100.64.130.203
+  - 100.64.130.204
+
+avi_servers_port: 80
 
 avi_cloud:
-  name: Default-Cloud
+  name: dc1_vCenter
+
+domain_name: vmw.avidemo.fr
+
+network_name: vxw-dvs-34-virtualwire-118-sid-1080117-sof2-01-vc08-avi-dev114
+
 ```
 
-- The other varaiables don't need to be adjusted.
+- The other variables don't need to be changed.
 
-
-
-## Use the the ansible playbook to:
+## Use the ansible playbook to:
 1. Create a Health Monitor
 2. Create a Pool (based on the Health Monitor previously created)
-3. Create a VS based on Avi IPAM (first network) and DNS (first domain name) and based on the pool previously created
+3. Create a VS based on Avi IPAM and DNS and based on the pool previously created
 
 ## Run the playbook:
 - download the playbook:
 ```
-git clone https://github.com/tacobayle/ansibleAviVs
+git clone https://github.com/tacobayle/ansibleAviVsIpamDns
 ```
 - initialize the variables (vars/creds.json and vars/params.yml)
-- to create the VS:
+- to create the health monitor, the pool amd the VS:
 ```
 ansible-playbook local.yml --extra-vars @pathto/creds.json
 ```
-- to remove the VS:
-```
-ansible-playbook local.yml --extra-vars @pathto/creds.json --extra-var state=absent
-```
-
-## Improvment:
-- add SE service group (to be tested)
-- add log and analytics capabilities (to be tested)
-- remove all the objects when state is absent
-- use avi lookup module to retrieve network uuid

@@ -11,93 +11,6 @@
 
   tasks:
 
-#    - name: Get Clouds list
-#      vmware.alb.avi_api_session:
-#        avi_credentials: "{{ avi_credentials | default(omit) }}"
-#        api_context: "{{ avi_api_context | default(omit) }}"
-#        http_method: get
-#        path: cloud
-#      register: cloudResults
-#      ignore_errors: yes
-#      when:
-#        - state is not defined
-#
-#    - name: Retrieve IPAM Ref
-#      set_fact:
-#        ipam_ref: "{{ item.ipam_provider_ref.split('/ipamdnsproviderprofile/')[1] }}"
-#      loop: "{{ cloudResults.obj.results }}"
-#      loop_control:
-#        label: "{{ item.name }}"
-#      when:
-#        - state is not defined
-#        - item.name == avi_cloud.name
-#      tags:
-#        - ipamdns
-#
-#    - name: Retrieve DNS Ref
-#      set_fact:
-#        dns_ref: "{{ item.dns_provider_ref.split('/ipamdnsproviderprofile/')[1] }}"
-#      loop: "{{ cloudResults.obj.results }}"
-#      loop_control:
-#        label: "{{ item.name }}"
-#      when:
-#        - state is not defined
-#        - item.name == avi_cloud.name
-#      tags:
-#        - ipamdns
-
-#    - name: Debug
-#      debug:
-#        msg: "{{ ipam_ref }}"
-#
-#    - name: Debug
-#      debug:
-#        msg: "{{ dns_ref }}"
-
-#    - name: get IPAM/DNS Profile
-#      vmware.alb.avi_api_session:
-#        avi_credentials: "{{ avi_credentials | default(omit) }}"
-#        api_context: "{{ avi_api_context | default(omit) }}"
-#        http_method: get
-#        timeout: 300
-#        path: ipamdnsproviderprofile
-#      register: ipamDnsOutput
-#      tags:
-#        - ipamdns
-#      when:
-#        - state is not defined
-#
-#    - name: Retrieve domain_name
-#      set_fact:
-#        domain_name: "{{ item.internal_profile.dns_service_domain.0.domain_name }}"
-#      loop: "{{ ipamDnsOutput.obj.results }}"
-#      loop_control:
-#        label: "{{ item.name }}"
-#      when:
-#        - state is not defined
-#        - item.uuid == dns_ref
-#        - item.type == "IPAMDNS_TYPE_INTERNAL_DNS"
-#      tags:
-#        - ipamdns
-#
-#    - name: Debug
-#      debug:
-#        msg: "{{ domain_name }}"
-
-#    - name: Retrieve IPAM Network details
-#      set_fact:
-#        network_uuid: "{{ item.internal_profile.usable_networks.0.nw_ref.split('/network/')[1] }}"
-#      loop: "{{ ipamDnsOutput.obj.results }}"
-#      loop_control:
-#        label: "{{ item.name }}"
-#      when:
-#        - state is not defined
-#        - item.type == "IPAMDNS_TYPE_INTERNAL"
-
-#    - name: Debug
-#      debug:
-#        msg: "{{ network_uuid }}"
-
     - name: get Network details
       vmware.alb.avi_api_session:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
@@ -110,8 +23,6 @@
       register: network_list
       tags:
         - ipamdns
-      when:
-        - state is not defined
 
 
     - name: Retrieve Network details
@@ -124,7 +35,6 @@
       loop_control:
         label: "{{ item.name }}"
       when:
-        - state is not defined
         - item.name == network_name
       tags:
         - ipamdns
@@ -132,26 +42,18 @@
     - name: Debug
       debug:
         msg: "{{ network_name }}"
-      when:
-        - state is not defined
 
     - name: Debug
       debug:
         msg: "{{ network_mask }}"
-      when:
-        - state is not defined
 
     - name: Debug
       debug:
         msg: "{{ network_address }}"
-      when:
-        - state is not defined
 
     - name: Debug
       debug:
         msg: "{{ network_type }}"
-      when:
-        - state is not defined
 
     - name: Create HTTP health monitor
       vmware.alb.avi_healthmonitor:
@@ -170,7 +72,6 @@
         type: "{{ item.type }}"
       loop: "{{ avi_healthmonitor }}"
       when:
-        - state is not defined
         - item.type == "HEALTH_MONITOR_HTTP"
         - avi_healthmonitor is defined
       tags:
@@ -188,7 +89,6 @@
         health_monitor_refs:
           - "/api/healthmonitor?name={{ avi_pool.health_monitor_refs }}"
       when:
-        - state is not defined
         - avi_pool is defined
       tags:
         - pool
@@ -212,7 +112,6 @@
               type: 'V4'
       loop: "{{ avi_servers_ips }}"
       when:
-        - state is not defined
         - avi_servers_ips is defined
         - avi_pool is defined
       tags:
@@ -240,7 +139,6 @@
       register: OutputVsVip
       loop: "{{ avi_virtualservice.http }}"
       when:
-        - state is not defined
         - avi_virtualservice.http is defined
       tags:
         - vsvip
@@ -262,7 +160,6 @@
         enable_rhi: "{{ item.enable_rhi | default('false') }}"
         vsvip_ref: "/api/vsvip/?name=vsvip-{{ item.name }}"
         se_group_ref:  "/api/serviceenginegroup/?name={{ item.se_group_ref | default('Default-Group') }}"
-        state: "{{ state | default(omit) }}"
         analytics_policy:
           udf_log_throttle: 10
           full_client_logs:
