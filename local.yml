@@ -203,7 +203,6 @@
         name: "{{ avi_pool.name }}"
         cloud_ref: "/api/cloud/?name={{ avi_cloud.name | default('Default-Cloud') }}"
         tenant_ref: "/api/tenant?name={{ tenant_ref | default('admin') }}"
-        lb_algorithm: "{{ avi_pool.lb_algorithm }}"
         health_monitor_refs:
           - "/api/healthmonitor?name={{ avi_pool.health_monitor_refs }}"
         default_server_port: "{{ avi_servers_port }}"
