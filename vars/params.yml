@@ -9,7 +9,7 @@ avi_servers_port: 80
 avi_cloud:
   name: dc1_vCenter
 
-domain_name: vmw.avidemo.fr
+domain_name: vcenter.avi.com
 
 network_name: vxw-dvs-34-virtualwire-118-sid-1080117-sof2-01-vc08-avi-dev114
 
