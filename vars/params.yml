@@ -1,17 +1,17 @@
 ---
 
 avi_servers_ips:
-  - 100.64.130.203
-  - 100.64.130.204
+  - 100.64.129.203
+  - 100.64.129.204
 
 avi_servers_port: 80
 
 avi_cloud:
   name: Default-Cloud
 
-domain_name: vcenter.alb.com
+domain_name: vcenter.avi.com
 
-network_name: vxw-dvs-34-virtualwire-118-sid-1080117-sof2-01-vc08-avi-dev114
+network_name: vxw-dvs-34-virtualwire-120-sid-6120119-wdc-06-vc12-avi-dev116
 
 tenant_ref: admin
 

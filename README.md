@@ -6,7 +6,7 @@ Configure a Health Monitor, Pool and VS through Ansible
 ## Prerequisites:
 - Make sure pip install avisdk is installed:
 ```
-pip install avisdk==21.1.4
+pip install avisdk==22.1.6
 ```
 - Make sure the following ansible collection is installed:
 ```
@@ -29,8 +29,8 @@ ansible 2.10.13
 
 ### Avi version
 ```
-Avi 21.1.4
-avisdk 21.1.4
+Avi 22.1.6
+avisdk 22.1.6
 ```
 
 ### Avi Environment
@@ -50,15 +50,15 @@ ubuntu@jump-sofia:~/ansibleAviVsIpamDns$
 - The following parameters need to be changed:
 ```
 avi_servers_ips:
-  - 100.64.130.203
-  - 100.64.130.204
+  - 100.64.129.203
+  - 100.64.129.204
 
 avi_servers_port: 80
 
 avi_cloud:
-  name: dc1_vCenter
+  name: Default-Cloud
 
-domain_name: vmw.avidemo.fr
+domain_name: vmw.avi.com
 
 network_name: vxw-dvs-34-virtualwire-118-sid-1080117-sof2-01-vc08-avi-dev114
 
